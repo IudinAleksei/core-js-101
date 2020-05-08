@@ -391,8 +391,17 @@ function isBracketsBalanced(str) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  const a = [];
+  let input = num;
+  while (input >= n) {
+    a.push(input % n);
+    input = Math.floor(input / n);
+  }
+  a.push(input);
+  a.reverse();
+  const result = a.join('');
+  return result;
 }
 
 
@@ -408,8 +417,18 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const pathesToArray = pathes.map((path) => path.split('/'));
+  const out = pathesToArray.reduce((prev, item) => {
+    const temp = item.filter((inner, index) => inner === prev[index]);
+    return temp;
+  }, pathesToArray[0]);
+  if (out[0] === undefined) {
+    return '';
+  }
+  let result = out.join('/');
+  result = `${result}/`;
+  return result;
 }
 
 

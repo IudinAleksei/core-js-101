@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unreachable */
+/* eslint-disable no-unsafe-finally */
 /* ************************************************************************************************
  *                                                                                                *
  * Plese read the following tutorial before implementing tasks:                                   *
@@ -118,54 +121,84 @@ function fromJSON(proto, json) {
  *
  *  For more examples see unit tests.
  */
-// eslint-disable-next-line no-unused-vars
+
 const cssSelectorBuilder = {
   string: '',
+  commands: [],
 
   element(/* value */) {
     throw new Error('Not implemented');
-    // this.string += value;
-    // return this;
+    const obj = { ...this };
+
+    if (obj.commands.includes('element')) {
+      return () => { throw new SyntaxError('Element, id and pseudo-element should not occur more then one time inside the selector'); };
+    }
+
+    obj.commands.push('element');
+    obj.string += value;
+    return obj;
   },
 
   id(/* value */) {
-    // this.string += `#${value}`;
-    // return this;
+    throw new Error('Not implemented');
+    const obj = { ...this };
+
+    if (obj.commands.includes('id')) {
+      return () => { throw new SyntaxError('Element, id and pseudo-element should not occur more then one time inside the selector'); };
+    }
+
+    obj.commands.push('id');
+    obj.string += `#${value}`;
+    return obj;
   },
 
   class(/* value */) {
-    // this.string += `.${value}`;
-    // return this;
+    throw new Error('Not implemented');
+    const obj = { ...this };
+    obj.string += `.${value}`;
+    return obj;
   },
 
   attr(/* value */) {
-    // this.string += `[${value}]`;
-    // return this;
+    throw new Error('Not implemented');
+    const obj = { ...this };
+    obj.string += `[${value}]`;
+    return obj;
   },
 
   pseudoClass(/* value */) {
-    // this.string += `:${value}`;
-    // return this;
+    throw new Error('Not implemented');
+    const obj = { ...this };
+    obj.string += `:${value}`;
+    return obj;
   },
 
   pseudoElement(/* value */) {
-    // this.string += `::${value}`;
-    // return this;
+    throw new Error('Not implemented');
+    const obj = { ...this };
+
+    if (obj.commands.includes(' pseudoElement')) {
+      return () => { throw new SyntaxError('Element, id and pseudo-element should not occur more then one time inside the selector'); };
+    }
+
+    obj.commands.push(' pseudoElement');
+    obj.string += `::${value}`;
+    return obj;
   },
 
   combine(/* selector1, combinator, selector2 */) {
     throw new Error('Not implemented');
-    // const first = selector1.stringify();
-    // const second = selector2.stringify();
-    // this.string = `${first} ${combinator} ${second}`;
-    // return this;
+    const first = selector1.stringify();
+    const second = selector2.stringify();
+    const obj = { ...this };
+    obj.string = `${first} ${combinator} ${second}`;
+    return obj;
   },
 
   stringify() {
     throw new Error('Not implemented');
-    // const out = this.string;
-    // this.string = '';
-    // return out;
+    const out = this.string;
+    return out;
   },
 };
 
