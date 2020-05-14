@@ -449,9 +449,20 @@ function getCommonDirectoryPath(pathes) {
  *   [[ 1, 2, 3]]    X     [ 5 ],          =>     [[ 32 ]]
  *                         [ 6 ]]
  *
+ *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = m1.map((row) => {
+    const out = m2[0].map((rowM2, indCol) => {
+      const sumRC = row.reduce((prev, curr, indRow) => {
+        const temp = prev + curr * m2[indRow][indCol];
+        return temp;
+      }, 0);
+      return sumRC;
+    });
+    return out;
+  });
+  return result;
 }
 
 
@@ -485,8 +496,46 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const addedUndef = position.map((item) => {
+    const temp = item.slice();
+    while (temp.length < 3) {
+      temp.push(undefined);
+    }
+    return temp;
+  });
+  const oneDimensionPos = addedUndef.reduce((prev, cur) => prev.concat(cur), []);
+  const getSimbolIndexs = (array, simbol) => {
+    const out = array.reduce((prev, item, ind) => {
+      const temp = (item === simbol) ? prev.concat([ind]) : prev;
+      return temp;
+    }, []);
+    return out;
+  };
+  const xIndexs = getSimbolIndexs(oneDimensionPos, 'X');
+  const oIndexs = getSimbolIndexs(oneDimensionPos, '0');
+  const isWin = (defArr) => {
+    const winCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
+      [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+    for (let i = 0; i < winCombinations.length; i += 1) {
+      const combination = winCombinations[i];
+      const compareResult = combination.reduce((prev, cur) => {
+        const temp = (defArr.includes(cur)) ? prev + 1 : prev;
+        return temp;
+      }, 0);
+      if (compareResult > 2) {
+        return true;
+      }
+    }
+    return false;
+  };
+  if (isWin(xIndexs)) {
+    return 'X';
+  }
+  if (isWin(oIndexs)) {
+    return '0';
+  }
+  return undefined;
 }
 
 

@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unreachable */
-/* eslint-disable no-unsafe-finally */
 /* ************************************************************************************************
  *                                                                                                *
  * Plese read the following tutorial before implementing tasks:                                   *
@@ -124,70 +121,114 @@ function fromJSON(proto, json) {
 
 const cssSelectorBuilder = {
   string: '',
-  commands: [],
+  commands: '',
 
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
     const obj = { ...this };
-
     if (obj.commands.includes('element')) {
-      return () => { throw new SyntaxError('Element, id and pseudo-element should not occur more then one time inside the selector'); };
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
     }
 
-    obj.commands.push('element');
+    const reg = /id|class|attr|pseudoClass|pseudoElement/;
+
+    if (reg.test(obj.commands)) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+      );
+    }
+
+    obj.commands += 'element/';
     obj.string += value;
     return obj;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
     const obj = { ...this };
 
     if (obj.commands.includes('id')) {
-      return () => { throw new SyntaxError('Element, id and pseudo-element should not occur more then one time inside the selector'); };
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
     }
 
-    obj.commands.push('id');
+    const reg = /class|attr|pseudoClass|pseudoElement/;
+
+    if (reg.test(obj.commands)) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+      );
+    }
+
+    obj.commands += 'id/';
     obj.string += `#${value}`;
     return obj;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
     const obj = { ...this };
+
+    const reg = /attr|pseudoClass|pseudoElement/;
+
+    if (reg.test(obj.commands)) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+      );
+    }
+
+    obj.commands += 'class/';
     obj.string += `.${value}`;
     return obj;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
     const obj = { ...this };
+
+    const reg = /pseudoClass|pseudoElement/;
+
+    if (reg.test(obj.commands)) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+      );
+    }
+
+    obj.commands += 'attr/';
     obj.string += `[${value}]`;
     return obj;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
     const obj = { ...this };
+
+    const reg = /pseudoElement/;
+
+    if (reg.test(obj.commands)) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+      );
+    }
+
+    obj.commands += 'pseudoClass/';
     obj.string += `:${value}`;
     return obj;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
     const obj = { ...this };
 
-    if (obj.commands.includes(' pseudoElement')) {
-      return () => { throw new SyntaxError('Element, id and pseudo-element should not occur more then one time inside the selector'); };
+    if (obj.commands.includes('pseudoElement')) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
     }
 
-    obj.commands.push(' pseudoElement');
+    obj.commands += 'pseudoElement/';
     obj.string += `::${value}`;
     return obj;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
     const first = selector1.stringify();
     const second = selector2.stringify();
     const obj = { ...this };
@@ -196,7 +237,6 @@ const cssSelectorBuilder = {
   },
 
   stringify() {
-    throw new Error('Not implemented');
     const out = this.string;
     return out;
   },
