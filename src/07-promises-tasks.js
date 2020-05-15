@@ -106,14 +106,22 @@ function getFastestPromise(array) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
-  // const firstPromise = array[0];
-  // const otherPromises = array.slice(1, array.length);
-  // const result = otherPromises.reduce((prev, cur) => {
-  //   const
-  // }, firstPromise);
-  // return result;
+async function chainPromises(array, action) {
+  const promiseArrayLength = array.length;
+  const resPromises = [];
+  for (let i = 0; i < promiseArrayLength; i += 1) {
+    const curProm = array[i];
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      resPromises.push(await curProm);
+    } catch (err) {
+      resPromises.push(err);
+    }
+  }
+  const first = resPromises[0];
+  const other = resPromises.slice(1);
+  const result = other.reduce((prev, cur) => action(prev, cur), first);
+  return result;
 }
 
 module.exports = {
